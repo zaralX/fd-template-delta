@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+  <div class="min-h-screen flex flex-col bg-default">
     <!-- Header -->
-    <header class="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+    <header class="border-b border-default bg-elevated">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <NuxtLink
@@ -34,7 +34,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800 py-6 text-center text-sm text-gray-500">
+    <footer class="border-t border-default py-6 text-center text-sm text-muted">
       <p>Powered by FreshDonate</p>
     </footer>
   </div>
