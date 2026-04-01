@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const cart = useCartStore()
 
+const settings = useShopSettingsStore()
 const selectedServer = ref('all')
 const selectedCategory = ref('all')
 
@@ -55,7 +56,7 @@ function handleAddToCart(productId: string) {
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     <!-- Hero -->
     <ShopHeroBanner
-      title="Не сервер, а мечта!"
+      :title="settings.name"
       server-ip="play.example.com"
     />
 
@@ -74,8 +75,8 @@ function handleAddToCart(productId: string) {
     >
       <ShopProductCard
         v-for="product in filteredProducts"
-        :key="product.id"
         :id="product.id"
+        :key="product.id"
         :name="product.name"
         :price="product.price"
         :currency="product.currency"
