@@ -1,52 +1,46 @@
 <script setup lang="ts">
 const cart = useCartStore()
-
 const settings = useShopSettingsStore()
-const selectedServer = ref('all')
+const productsStore = useProductsStore()
+
 const selectedCategory = ref('all')
 
-// Mock data — will be replaced with API calls
-const servers = [
-  { id: 'survival', label: 'Survival' },
-  { id: 'anarchy', label: 'Anarchy' },
-  { id: 'skyblock', label: 'SkyBlock' }
-]
+const currencySymbols: Record<string, string> = {
+  RUB: '₽',
+  USD: '$',
+  EUR: '€'
+}
 
-const categories = [
-  { id: 'privileges', label: 'Привилегии' },
-  { id: 'resources', label: 'Ресурсы' },
-  { id: 'keys', label: 'Ключи' },
-  { id: 'cosmetics', label: 'Косметика' }
-]
+const typeLabels: Record<string, string> = {
+  item: 'Предметы',
+  privilege: 'Привилегии',
+  currency: 'Валюта',
+  other: 'Другое'
+}
 
-const products = ref([
-  { id: '1', name: 'VIP', price: 99, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'privileges' },
-  { id: '2', name: 'Premium', price: 249, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'privileges' },
-  { id: '3', name: 'Elite', price: 499, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'privileges' },
-  { id: '4', name: 'Legend', price: 899, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'privileges' },
-  { id: '5', name: 'Ultimate', price: 1299, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'privileges' },
-  { id: '6', name: 'Набор алмазов', price: 49, currency: '₽', imageUrl: '', serverId: 'survival', categoryId: 'resources' },
-  { id: '7', name: 'Набор ресурсов', price: 149, currency: '₽', imageUrl: '', serverId: 'anarchy', categoryId: 'resources' },
-  { id: '8', name: 'Золотой ключ', price: 79, currency: '₽', imageUrl: '', serverId: 'skyblock', categoryId: 'keys' },
-  { id: '9', name: 'Алмазный ключ', price: 199, currency: '₽', imageUrl: '', serverId: 'skyblock', categoryId: 'keys' }
-])
+const categories = computed(() => {
+  const types = new Set(productsStore.items.map(p => p.type))
+  return [...types].map(type => ({
+    id: type,
+    label: typeLabels[type] || type
+  }))
+})
 
 const filteredProducts = computed(() => {
-  return products.value.filter((p) => {
-    if (selectedServer.value !== 'all' && p.serverId !== selectedServer.value) return false
-    if (selectedCategory.value !== 'all' && p.categoryId !== selectedCategory.value) return false
+  return productsStore.items.filter((p) => {
+    if (selectedCategory.value !== 'all' && p.type !== selectedCategory.value) return false
     return true
   })
 })
 
 function handleAddToCart(productId: string) {
-  const product = products.value.find(p => p.id === productId)
+  const product = productsStore.items.find(p => p.id === productId)
   if (!product) return
   cart.addItem({
     productId: product.id,
     name: product.name,
     price: product.price,
-    currency: product.currency,
+    currency: currencySymbols[product.currency] || product.currency,
     imageUrl: product.imageUrl
   })
 }
@@ -61,12 +55,27 @@ function handleAddToCart(productId: string) {
     />
 
     <!-- Filters -->
-    <ShopFilterBar
-      v-model:server="selectedServer"
-      v-model:category="selectedCategory"
-      :servers="servers"
-      :categories="categories"
-    />
+    <div
+      v-if="categories.length > 1"
+      class="flex flex-wrap gap-2"
+    >
+      <UButton
+        :variant="selectedCategory === 'all' ? 'solid' : 'ghost'"
+        :color="selectedCategory === 'all' ? 'primary' : 'neutral'"
+        size="sm"
+        label="Все"
+        @click="selectedCategory = 'all'"
+      />
+      <UButton
+        v-for="cat in categories"
+        :key="cat.id"
+        :variant="selectedCategory === cat.id ? 'solid' : 'ghost'"
+        :color="selectedCategory === cat.id ? 'primary' : 'neutral'"
+        size="sm"
+        :label="cat.label"
+        @click="selectedCategory = cat.id"
+      />
+    </div>
 
     <!-- Products Grid -->
     <div
@@ -79,7 +88,8 @@ function handleAddToCart(productId: string) {
         :key="product.id"
         :name="product.name"
         :price="product.price"
-        :currency="product.currency"
+        :quantity="product.quantity"
+        :currency="currencySymbols[product.currency] || product.currency"
         :image-url="product.imageUrl"
         @add-to-cart="handleAddToCart"
       />

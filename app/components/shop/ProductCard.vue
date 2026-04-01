@@ -3,6 +3,7 @@ const props = defineProps<{
   id: string
   name: string
   price: number
+  quantity: number
   currency?: string
   imageUrl?: string
 }>()
@@ -41,7 +42,7 @@ const emit = defineEmits<{
       <div class="flex items-center justify-between mt-2">
         <div class="flex items-baseline gap-1">
           <span class="text-lg font-bold text-primary">{{ props.price.toLocaleString() }}{{ props.currency || '₽' }}</span>
-          <span class="text-xs text-muted">/ 1 шт.</span>
+          <span class="text-xs text-muted">/ {{ props.quantity }} шт.</span>
         </div>
         <UButton
           icon="i-lucide-shopping-cart"
