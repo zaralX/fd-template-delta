@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const cart = useCartStore()
-
-const shopName = ref('FreshDonate')
+const settings = useShopSettingsStore()
 
 const navLinks = [
   { label: 'Главная', to: '/', icon: 'i-lucide-house' },
@@ -27,7 +26,7 @@ const navLinks = [
                 class="size-4 text-white"
               />
             </div>
-            <span class="text-lg font-bold tracking-tight">{{ shopName }}</span>
+            <span class="text-lg font-bold tracking-tight">{{ settings.name }}</span>
           </NuxtLink>
 
           <!-- Nav links (desktop) -->
@@ -100,10 +99,13 @@ const navLinks = [
             </div>
             <div>
               <p class="font-bold">
-                {{ shopName }}
+                {{ settings.name }}
               </p>
-              <p class="text-sm text-muted">
-                Лучший магазин для вашего сервера
+              <p
+                v-if="settings.description"
+                class="text-sm text-muted"
+              >
+                {{ settings.description }}
               </p>
             </div>
           </div>
@@ -121,7 +123,7 @@ const navLinks = [
 
         <!-- Footer bottom -->
         <div class="border-t border-default py-4 text-center text-sm text-muted">
-          <p>&copy; {{ new Date().getFullYear() }} {{ shopName }}. Все права защищены.</p>
+          <p>&copy; {{ new Date().getFullYear() }} {{ settings.name }}. Все права защищены.</p>
           <p class="mt-1">
             Сайт создан с помощью
             <NuxtLink
