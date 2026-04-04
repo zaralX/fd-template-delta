@@ -1,9 +1,12 @@
 <script setup lang="ts">
-const cart = useCartStore()
+import type { Product } from '~/stores/products'
+
 const settings = useShopSettingsStore()
 const productsStore = useProductsStore()
 
 const selectedCategory = ref('all')
+const purchaseOpen = ref(false)
+const purchaseProduct = ref<Product | null>(null)
 
 const currencySymbols: Record<string, string> = {
   RUB: '₽',
@@ -33,16 +36,11 @@ const filteredProducts = computed(() => {
   })
 })
 
-function handleAddToCart(productId: string) {
+function openPurchase(productId: string) {
   const product = productsStore.items.find(p => p.id === productId)
   if (!product) return
-  cart.addItem({
-    productId: product.id,
-    name: product.name,
-    price: product.price,
-    currency: currencySymbols[product.currency] || product.currency,
-    imageUrl: product.imageUrl
-  })
+  purchaseProduct.value = product
+  purchaseOpen.value = true
 }
 </script>
 
@@ -91,7 +89,7 @@ function handleAddToCart(productId: string) {
         :quantity="product.quantity"
         :currency="currencySymbols[product.currency] || product.currency"
         :image-url="product.imageUrl"
-        @add-to-cart="handleAddToCart"
+        @add-to-cart="openPurchase"
       />
     </div>
 
@@ -108,5 +106,12 @@ function handleAddToCart(productId: string) {
         Товары не найдены
       </p>
     </div>
+
+    <!-- Purchase Modal -->
+    <ShopPurchaseModal
+      v-if="purchaseProduct"
+      v-model:open="purchaseOpen"
+      :product="purchaseProduct"
+    />
   </div>
 </template>
