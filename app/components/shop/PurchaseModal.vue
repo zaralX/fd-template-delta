@@ -15,15 +15,26 @@ const currencySymbols: Record<string, string> = {
 
 const symbol = computed(() => currencySymbols[props.product.currency] || props.product.currency)
 
+const paymentOptionsStore = usePaymentOptionsStore()
+
 const nickname = ref('')
 const email = ref('')
-const selectedMethod = ref('cards_ru')
+const selectedMethod = ref('')
 const termsAccepted = ref(false)
 
-const paymentMethods = [
-  { id: 'cards_ru', label: 'Российские карты и СБП', icon: 'i-lucide-credit-card' },
-  { id: 'crypto', label: 'USDT, LTC и прочее', icon: 'i-lucide-bitcoin' }
-]
+const paymentMethods = computed(() =>
+  paymentOptionsStore.items.map(o => ({
+    id: o.id,
+    label: o.name,
+    icon: o.icon
+  }))
+)
+
+watch(paymentMethods, (methods) => {
+  if (methods.length > 0 && !methods.find(m => m.id === selectedMethod.value)) {
+    selectedMethod.value = methods[0].id
+  }
+}, { immediate: true })
 
 const totalPrice = computed(() => {
   return props.product.price
