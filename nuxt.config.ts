@@ -1,17 +1,3 @@
-import { execSync } from 'node:child_process'
-import { writeFileSync } from 'node:fs'
-
-let buildCommit = process.env.GIT_COMMIT || ''
-if (!buildCommit) {
-  try {
-    buildCommit = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim()
-  } catch {
-    buildCommit = 'unknown'
-  }
-}
-
-writeFileSync('build-info.json', JSON.stringify({ version: '1.0.0', commit: buildCommit }))
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 

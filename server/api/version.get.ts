@@ -1,14 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-
-let buildInfo = { version: '1.0.0', commit: 'unknown' }
-try {
-  const raw = readFileSync(resolve(process.cwd(), 'build-info.json'), 'utf-8')
-  buildInfo = JSON.parse(raw)
-} catch {
-  // file not found — fallback
-}
-
 export default defineEventHandler((event) => {
   setResponseHeaders(event, {
     'Access-Control-Allow-Origin': '*'
@@ -16,6 +5,6 @@ export default defineEventHandler((event) => {
 
   return {
     name: 'FreshDonate Shop',
-    ...buildInfo
+    version: '1.0.0'
   }
 })
