@@ -30,6 +30,13 @@ export default defineNuxtConfig({
     }
   },
 
+  routeRules: {
+    '/api/version': {
+      cors: true,
+      headers: { 'Access-Control-Allow-Origin': '*' }
+    }
+  },
+
   devServer: {
     port: 3002
   },

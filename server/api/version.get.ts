@@ -1,4 +1,8 @@
-export default defineEventHandler(() => {
+export default defineEventHandler((event) => {
+  setResponseHeaders(event, {
+    'Access-Control-Allow-Origin': '*'
+  })
+
   const config = useRuntimeConfig()
   return {
     name: 'FreshDonate Shop',
