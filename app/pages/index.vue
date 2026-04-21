@@ -5,6 +5,7 @@ const settings = useShopSettingsStore()
 const productsStore = useProductsStore()
 
 const selectedCategory = ref('all')
+const selectedServer = ref('all')
 const purchaseOpen = ref(false)
 const purchaseProduct = ref<Product | null>(null)
 
@@ -29,12 +30,13 @@ const categories = computed(() => {
   }))
 })
 
-const filteredProducts = computed(() => {
-  return productsStore.items.filter((p) => {
-    if (selectedCategory.value !== 'all' && p.type !== selectedCategory.value) return false
-    return true
-  })
-})
+const servers = computed(() => [{ id: 'shop', label: settings.name || 'Магазин' }])
+
+const filteredProducts = computed(() =>
+  productsStore.items.filter(p =>
+    selectedCategory.value === 'all' || p.type === selectedCategory.value
+  )
+)
 
 function openPurchase(productId: string) {
   const product = productsStore.items.find(p => p.id === productId)
@@ -45,40 +47,23 @@ function openPurchase(productId: string) {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-    <!-- Hero -->
+  <div class="mx-auto px-6 lg:px-20 py-10 space-y-12">
     <ShopHeroBanner
-      :title="settings.name"
+      :title="settings.description || settings.name"
       :server-ip="settings.ip"
     />
 
-    <!-- Filters -->
-    <div
-      v-if="categories.length > 1"
-      class="flex flex-wrap gap-2"
-    >
-      <UButton
-        :variant="selectedCategory === 'all' ? 'solid' : 'ghost'"
-        :color="selectedCategory === 'all' ? 'primary' : 'neutral'"
-        size="sm"
-        label="Все"
-        @click="selectedCategory = 'all'"
-      />
-      <UButton
-        v-for="cat in categories"
-        :key="cat.id"
-        :variant="selectedCategory === cat.id ? 'solid' : 'ghost'"
-        :color="selectedCategory === cat.id ? 'primary' : 'neutral'"
-        size="sm"
-        :label="cat.label"
-        @click="selectedCategory = cat.id"
-      />
-    </div>
+    <ShopFilterBar
+      id="shop"
+      v-model:server="selectedServer"
+      v-model:category="selectedCategory"
+      :servers="servers"
+      :categories="categories"
+    />
 
-    <!-- Products Grid -->
     <div
       v-if="filteredProducts.length > 0"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8"
     >
       <ShopProductCard
         v-for="product in filteredProducts"
@@ -93,21 +78,19 @@ function openPurchase(productId: string) {
       />
     </div>
 
-    <!-- Empty state -->
     <div
       v-else
       class="text-center py-16"
     >
       <UIcon
         name="i-lucide-package-x"
-        class="size-16 text-muted/30 mx-auto"
+        class="size-16 text-muted mx-auto"
       />
       <p class="mt-4 text-muted">
         Товары не найдены
       </p>
     </div>
 
-    <!-- Purchase Modal -->
     <ShopPurchaseModal
       v-if="purchaseProduct"
       v-model:open="purchaseOpen"

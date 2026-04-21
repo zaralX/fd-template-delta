@@ -9,43 +9,42 @@ const copied = ref(false)
 function copyIp(ip: string) {
   navigator.clipboard.writeText(ip)
   copied.value = true
-  setTimeout(() => { copied.value = false }, 2000)
+  setTimeout(() => {
+    copied.value = false
+  }, 2000)
 }
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-default">
-    <!-- Background pattern -->
-    <div class="absolute inset-0 opacity-5">
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:24px_24px]" />
+  <section class="relative overflow-hidden rounded-4xl bg-elevated min-h-105 lg:min-h-[520px]">
+    <div class="absolute inset-0 bg-linear-to-br from-primary/15 via-transparent to-transparent" />
+    <div class="absolute -right-32 -top-24 size-130 rounded-full bg-primary/20 blur-[120px]" />
+    <div class="absolute -right-10 bottom-0 top-0 w-1/2 flex items-center justify-center opacity-90">
+      <UIcon
+        name="i-lucide-pickaxe"
+        class="size-72 lg:size-96 text-primary/60 rotate-12"
+      />
     </div>
 
-    <div class="relative flex items-center justify-between px-8 py-12 md:py-16">
-      <div class="space-y-4">
-        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">
-          {{ title }}
-        </h1>
+    <div class="relative flex flex-col h-full px-8 lg:px-20 pt-14 pb-10 lg:pt-28 lg:pb-16 min-h-[inherit]">
+      <h1 class="font-display font-semibold text-4xl lg:text-6xl leading-tight max-w-200 text-white">
+        {{ title }}
+      </h1>
 
-        <UButton
+      <div class="mt-auto pt-10">
+        <button
           v-if="serverIp"
-          :label="copied ? 'Скопировано!' : serverIp"
-          :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
-          variant="subtle"
-          color="neutral"
-          size="lg"
+          type="button"
+          class="inline-flex items-center gap-4 bg-elevated px-6 py-4 lg:px-8 lg:py-5 rounded-2xl hover:opacity-90 transition-opacity cursor-pointer z-10"
           @click="copyIp(serverIp!)"
-        />
-      </div>
-
-      <!-- Decorative element -->
-      <div class="hidden md:block">
-        <div class="size-48 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+        >
+          <span class="font-medium">{{ serverIp }}</span>
           <UIcon
-            name="i-lucide-pickaxe"
-            class="size-24 text-primary/40"
+            :name="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+            class="size-4 text-muted"
           />
-        </div>
+        </button>
       </div>
     </div>
-  </div>
+  </section>
 </template>

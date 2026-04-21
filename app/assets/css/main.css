@@ -1,2 +1,30 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+:root,
+html.dark {
+  --ui-bg: #1a1b24;
+  --ui-bg-muted: #17181f;
+  --ui-bg-elevated: #1e1f28;
+  --ui-bg-accented: #2f3040;
+  --ui-border: rgba(255, 255, 255, 0.1);
+  --ui-border-muted: rgba(255, 255, 255, 0.05);
+  --ui-border-accented: rgba(255, 255, 255, 0.2);
+  --ui-text-muted: rgba(255, 255, 255, 0.5);
+  --ui-text-dimmed: rgba(255, 255, 255, 0.4);
+
+  --theme-card-bg: rgba(255, 255, 255, 0.02);
+  --theme-active-bg: #1e1f28;
+  --theme-pill-bg: #2f3040;
+  --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  background-color: var(--ui-bg);
+  font-family: "Onest", ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}

@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/image',
     '@nuxt/icon',
+    '@nuxt/fonts',
     '@pinia/nuxt'
   ],
   devtools: { enabled: true },
